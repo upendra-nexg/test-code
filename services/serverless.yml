@@ -1,0 +1,53 @@
+service: service
+
+frameworkVersion: ">=1.50.0 <=2.51.0"
+
+plugins:
+  - serverless-offline
+
+custom:
+  settings:
+    POSTS_TABLE: Content_Assets
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: dev
+  region: us-east-1
+  iamRoleStatements:
+   - Effect: "Allow"
+     Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+     Resource:
+      - "arn:aws:dynamodb:${self:provider.region}:*:table/${self:custom.settings.POSTS_TABLE}"  
+
+
+functions:
+  submitInformation:
+    handler: handler.getAllAudioInfo
+    memorySize: 128
+    description: Create function testing purpose.
+    events:
+      - http: 
+          path: getInfo
+          method: get
+resources:
+  Resources:
+    PostsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+        - AttributeName: "id"
+          AttributeType: "S"
+        KeySchema:
+        - AttributeName: "id"
+          KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:custom.settings.POSTS_TABLE}          
