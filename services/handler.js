@@ -6,15 +6,13 @@ const docClient = new AWS.DynamoDB.DocumentClient({ apiVersion: '2012-08-10' });
 module.exports.getAllAudioInfo = async (event, context, callback) => {
   if (event.queryStringParameters == null) {
     let data = await getInfo().then(info => info).catch(err => console.log(err));
+    console.log(data);
     let mainArr = [];
     for (let i = 0; i < data.Count; i++) {
       let mainObj = {
         id:data.Items[i].id,
-        name:data.Items[i].name,
-        audioUrl:data.Items[i].audioUrl,
-        audioImageUrl:data.Items[i].audioImage,
-        audioRunTime:data.Items[i].audioRunTime,
-        audioBitRate:data.Items[i].audioBitRate
+        clientName:data.Items[i].clientName,
+        Info:data.Items[i].info
       }
       mainArr.push(mainObj);
     }
@@ -26,11 +24,8 @@ module.exports.getAllAudioInfo = async (event, context, callback) => {
     if (audioInfo.Count > 0) {
       let mainObj = {
         id:audioInfo.Items[0].id,
-        name:audioInfo.Items[0].name,
-        audioUrl:audioInfo.Items[0].audioUrl,
-        audioImageUrl:audioInfo.Items[0].audioImage,
-        audioRunTime:audioInfo.Items[0].audioRunTime,
-        audioBitRate:audioInfo.Items[0].audioBitRate
+        clientName:audioInfo.Items[0].clientName,
+        Info:audioInfo.Items[0].info
       }
       mainArr.push(mainObj);
       callback(null, { statusCode: 200, body: JSON.stringify(mainArr) });
