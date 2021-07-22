@@ -36,6 +36,15 @@ functions:
       - http: 
           path: getInfo
           method: get
+  getInformation:
+    handler: handler.getAudioById
+    memorySize: 128
+    description: Create function testing purpose.
+    events:
+      - http: 
+          path: getInfo/{id}
+          method: get        
+        
 resources:
   Resources:
     PostsTable:
